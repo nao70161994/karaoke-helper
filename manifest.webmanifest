@@ -1,0 +1,14 @@
+{
+  "name": "カラオケ補助ツール",
+  "short_name": "カラオケ補助",
+  "description": "カラオケで使えるシンプルな補助ツール",
+  "lang": "ja",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#10131a",
+  "theme_color": "#10131a",
+  "icons": [
+    { "src": "./icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
