@@ -26,10 +26,10 @@ GitHubリポジトリの Settings → Pages → Build and deployment → Source 
 
 ## 開発・テスト
 - 外部JavaScriptライブラリ不要の静的Webアプリ
-- \`npm test\`（Node.js 20以降）
-- ローカル起動：\`python3 -m http.server 8080\`
-- ファイル構成：\`index.html\`（ホーム）、\`light.html\`（照明）、\`assets/\`（CSS）、\`src/\`（照明ロジックとSW登録）、\`tests/\`（単体テスト）
-- \`.github/workflows/pages.yml\` にデプロイワークフロー
+- `npm test`（Node.js 20以降）
+- ローカル起動：`python3 -m http.server 8080`
+- ファイル構成：`index.html`（ホーム）、`light.html`（照明）、`assets/`（CSS）、`src/`（照明ロジックとSW登録）、`tests/`（単体テスト）
+- `.github/workflows/pages.yml` にデプロイワークフロー
 
 ## 動作上の制約
 - カラオケ音声の自動認識ではなく、**タップで拍を合わせる方式**です
