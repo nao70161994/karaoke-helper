@@ -48,15 +48,12 @@ async function keepScreenAwake() {
   } catch (_) { /* 未対応の場合はそのまま使用 */ }
 }
 
-async function enter() {
+function enter() {
   setup.hidden = true;
   stage.hidden = false;
   stage.classList.remove('running');
   startedAt = null;
   paint(false);
-  try {
-    if (stage.requestFullscreen) await stage.requestFullscreen();
-  } catch (_) { /* iPhone Safari等では未対応 */ }
   keepScreenAwake();
 }
 
@@ -68,7 +65,6 @@ function exit() {
   lastState = false;
   stage.hidden = true;
   setup.hidden = false;
-  if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
 }
 
