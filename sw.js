@@ -1,7 +1,8 @@
-const CACHE_NAME = 'karaoke-helper-v2';
+const CACHE_NAME = 'karaoke-helper-v3';
 const ASSETS = [
-  './', './index.html', './light.html', './assets/app.css',
+  './', './index.html', './light.html', './serifu.html', './assets/app.css',
   './src/common.mjs', './src/lighting.mjs', './src/light-clock.mjs',
+  './src/serifu.mjs', './src/serifu-clock.mjs', './src/serifu-data.mjs',
   './manifest.webmanifest', './icons/icon.svg'
 ];
 
