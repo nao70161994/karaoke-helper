@@ -1,4 +1,4 @@
-import { SONG } from './serifu-data.mjs';
+import { SONGS, getSongById } from './serifu-data.mjs';
 import { currentLineIndex } from './serifu-clock.mjs';
 import './common.mjs';
 
@@ -11,6 +11,9 @@ const nowText = document.getElementById('now-text');
 const nextText = document.getElementById('next-text');
 const clock = document.getElementById('clock');
 const listEl = document.getElementById('line-list');
+const songSelectWrap = document.getElementById('song-select-wrap');
+const songSelect = document.getElementById('song-select');
+const songDescription = document.getElementById('song-description');
 
 // 話者ごとの色分け（プリズムショーの主要メンバー）。
 const SPEAKER_COLORS = {
@@ -33,38 +36,74 @@ function formatTime(sec) {
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 }
 
-// セットアップ画面に全セリフ一覧（練習用）。
-for (const line of SONG.lines) {
-  const li = document.createElement('li');
-  const time = document.createElement('span');
-  time.className = 'line-time';
-  time.textContent = formatTime(line.t);
-  const body = document.createElement('span');
-  if (line.speaker) {
-    const sp = document.createElement('strong');
-    sp.textContent = line.speaker;
-    sp.style.color = speakerColor(line.speaker);
-    body.append(sp, ' ', line.text);
-  } else {
-    body.textContent = line.text;
-  }
-  li.append(time, body);
-  listEl.append(li);
-}
-
+let selectedSong = SONGS[0];
 let startedAt = null;   // performance.now() 基準の開始時刻
 let offsetMs = 0;       // カラオケ音源とのずれ調整
 let rafId = 0;
 let lastIndex = -2;
 let wakeLock = null;
 
+function renderLineList() {
+  listEl.replaceChildren();
+  for (const line of selectedSong.lines) {
+    const li = document.createElement('li');
+    const time = document.createElement('span');
+    time.className = 'line-time';
+    time.textContent = formatTime(line.t);
+    const body = document.createElement('span');
+    if (line.speaker) {
+      const sp = document.createElement('strong');
+      sp.textContent = line.speaker;
+      sp.style.color = speakerColor(line.speaker);
+      body.append(sp, ' ', line.text);
+    } else {
+      body.textContent = line.text;
+    }
+    li.append(time, body);
+    listEl.append(li);
+  }
+}
+
+function selectSong(songId) {
+  const song = getSongById(songId);
+  if (!song) return;
+  selectedSong = song;
+  songDescription.textContent = `${song.title}（${song.work}）の曲中セリフを、タイミングに合わせて大きく表示します。`;
+  renderLineList();
+  lastIndex = -2;
+  if (!stage.hidden) {
+    cancelAnimationFrame(rafId);
+    startedAt = null;
+    offsetMs = 0;
+    stage.classList.remove('running');
+    nowSpeaker.textContent = ' ';
+    nowText.textContent = 'カラオケが始まったら画面をタップ';
+    nextText.textContent = '';
+    clock.textContent = '0:00';
+  }
+}
+
+if (SONGS.length > 1) {
+  songSelectWrap.hidden = false;
+  for (const song of SONGS) {
+    const option = document.createElement('option');
+    option.value = song.id;
+    option.textContent = `${song.title} — ${song.work}`;
+    songSelect.append(option);
+  }
+  songSelect.addEventListener('change', () => selectSong(songSelect.value));
+} else {
+  songSelectWrap.hidden = true;
+}
+selectSong(selectedSong.id);
+
 function render(elapsedMs) {
-  const idx = currentLineIndex(SONG.lines, elapsedMs);
+  const idx = currentLineIndex(selectedSong.lines, elapsedMs);
   clock.textContent = formatTime(elapsedMs / 1000);
   if (idx === lastIndex) return;
   lastIndex = idx;
-  const current = SONG.lines[idx];
-  const next = SONG.lines[idx + 1];
+  const current = selectedSong.lines[idx];
+  const next = selectedSong.lines[idx + 1];
   if (current) {
     nowSpeaker.textContent = current.speaker || ' ';
     nowSpeaker.style.color = speakerColor(current.speaker);

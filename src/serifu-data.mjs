@@ -3,7 +3,9 @@
 // 曲開始（映画本編 0:32:13）を 0 秒としてセリフのみを抜き出したもの。
 // t は曲開始からの秒数。カラオケ音源とは冒頭の長さが異なる場合があるため、
 // 画面側のオフセット調整で合わせる前提。
-export const SONG = Object.freeze({
+export const SONGS = Object.freeze([
+  Object.freeze({
+  id: 'ez-do-dance',
   title: 'EZ DO DANCE',
   work: 'KING OF PRISM by PrettyRhythm',
   lines: Object.freeze([
@@ -327,5 +329,42 @@ export const SONG = Object.freeze({
     "speaker": "カヅキ・アレクサンダー",
     "text": "(カヅキ･アレクサンダー) ハァ ハァ ハァ…"
   }
-]),
-});
+ ]),
+  }),
+]);
+
+// 既存利用箇所との互換性を保つため、先頭曲を SONG としても公開する。
+export const SONG = SONGS[0];
+
+export function getSongById(id) {
+  return SONGS.find(song => song.id === id) ?? null;
+}
+
+/** 曲データの登録形式を検証する。追加曲の開発時チェックにも利用できる。 */
+export function validateSongData(songs) {
+  if (!Array.isArray(songs) || songs.length === 0) {
+    throw new TypeError('曲データは1曲以上の配列である必要があります');
+  }
+  const ids = new Set();
+  for (const song of songs) {
+    if (!song || typeof song.id !== 'string' || !song.id.trim() || ids.has(song.id)) {
+      throw new TypeError('曲IDは空でなく、一意である必要があります');
+    }
+    ids.add(song.id);
+    if (typeof song.title !== 'string' || !song.title.trim() ||
+        typeof song.work !== 'string' || !song.work.trim() ||
+        !Array.isArray(song.lines) || song.lines.length === 0) {
+      throw new TypeError(`曲 ${song.id} のタイトル・作品名・セリフ行が不正です`);
+    }
+    let previousTime = -Infinity;
+    for (const line of song.lines) {
+      if (!line || !Number.isFinite(line.t) || line.t < 0 || line.t < previousTime ||
+          typeof line.speaker !== 'string' || typeof line.text !== 'string' || !line.text.trim()) {
+        throw new TypeError(`曲 ${song.id} のセリフ行が不正です`);
+      }
+      previousTime = line.t;
+    }
+  }
+  return true;
+}
+

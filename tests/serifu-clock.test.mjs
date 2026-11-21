@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { currentLineIndex, msUntilNextLine, songLengthSec } from '../src/serifu-clock.mjs';
-import { SONG } from '../src/serifu-data.mjs';
+import { SONGS } from '../src/serifu-data.mjs';
 
 const lines = [
   { t: 7, speaker: 'A', text: 'one' },
@@ -29,9 +29,9 @@ test('次のセリフまでの時間', () => {
 });
 
 test('EZ DO DANCEのデータが昇順で実在する', () => {
-  assert.ok(SONG.lines.length >= 50);
-  for (let i = 1; i < SONG.lines.length; i++) {
-    assert.ok(SONG.lines[i].t >= SONG.lines[i - 1].t);
+  assert.ok(SONGS[0].lines.length >= 50);
+  for (let i = 1; i < SONGS[0].lines.length; i++) {
+    assert.ok(SONGS[0].lines[i].t >= SONGS[0].lines[i - 1].t);
   }
-  assert.ok(songLengthSec(SONG.lines) > 240);
+  assert.ok(songLengthSec(SONGS[0].lines) > 240);
 });

@@ -13,7 +13,11 @@
     <div class="setup-panel">
       <a class="back-link" href="./index.html">‹ 機能一覧</a>
       <h1>プリズムショー セリフ表示</h1>
-      <p class="setup-lead">EZ DO DANCE（KING OF PRISM by PrettyRhythm）の曲中セリフを、タイミングに合わせて大きく表示します。</p>
+      <p class="setup-lead" id="song-description">曲中セリフを、タイミングに合わせて大きく表示します。</p>
+      <div id="song-select-wrap" class="song-select-wrap" hidden>
+        <label for="song-select">曲を選択</label>
+        <select id="song-select" class="song-select"></select>
+      </div>
       <button type="button" class="primary-button" id="go">表示画面へ</button>
       <p class="setup-help">カラオケが始まった瞬間に画面をタップすると同期開始。<br>ずれたら表示画面の下部ボタンで±調整、再タップで最初から。</p>
       <h2 class="list-heading">全セリフ（練習用）</h2>
